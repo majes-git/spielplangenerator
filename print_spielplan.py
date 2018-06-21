@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import json
 import os
 import sys
@@ -15,8 +16,8 @@ def load_config():
     try:
         config = json.load(open(filename))
     except Exception as e:
-        print "Could not load config file: {}".format(e.message)
-        print "Usage: {} <config file>".format(sys.argv[0])
+        print("Could not load config file: {}".format(e.message))
+        print("Usage: {} <config file>".format(sys.argv[0]))
         sys.exit(1)
     return config
 
@@ -31,7 +32,7 @@ def main():
     for spiel in schema:
         line = "%s | %2s | %s | %-30s | %-30s" % (spieltage[str(spiel[2])], i / 3 + 1, teams[spiel[3] - 1][
             1], teams[spiel[0] - 1][0], teams[spiel[1] - 1][0])
-        print line.encode('utf8')
+        print(line.encode('utf8'))
         i += 1
 
 
