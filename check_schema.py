@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
 import json
 import sys
 from itertools import chain
@@ -12,8 +15,8 @@ class Error(Exception):
 
 
 class schema:
-    def __init__(self, schema):
-        self.schema = schema
+    def __init__(self, _schema):
+        self.schema = _schema
         self.count_teams()
         self.count_matches()
         self.count_rounds()
@@ -43,19 +46,19 @@ class schema:
 def main():
     try:
         if len(sys.argv) != 2:
-            print "Syntax: %s <schemaXX.json>" % sys.argv[0]
+            print("Syntax: %s <schemaXX.json>" % sys.argv[0])
             return
         s = schema(json.load(open(sys.argv[1])))
-        print '* Anzahl der Mannschaften: %d' % s.teams
-        print '* Anzahl der Heim-/Gastspiele:'
+        print('* Anzahl der Mannschaften: %d' % s.teams)
+        print('* Anzahl der Heim-/Gastspiele:')
         for m in range(s.teams):
-            print '  - Mannschaft %2d: Heim %2d | Gast %2d | Gesamt %2d' % \
-                (m + 1, s.home[m], s.guest[m], s.home[m] + s.guest[m])
-        print '* Anzahl der Runden: %d' % s.rounds
+            print('  - Mannschaft %2d: Heim %2d | Gast %2d | Gesamt %2d' %
+                  (m + 1, s.home[m], s.guest[m], s.home[m] + s.guest[m]))
+        print('* Anzahl der Runden: %d' % s.rounds)
         if set(chain.from_iterable(s.pairs)) != set([s.rounds]):
             raise Error('Anzahl der Paarungen (%d mal jeder gegen jeden) nicht korrekt: %s' % (s.rounds, s.pairs))
-        print '* Anzahl der Paarungen (%d mal jeder gegen jeden) korrekt' % \
-            s.rounds
+        print('* Anzahl der Paarungen (%d mal jeder gegen jeden) korrekt' %
+              s.rounds)
         try:
             day = 0
             team_matches = [0] * s.teams
@@ -77,7 +80,8 @@ def main():
             raise
 
     except Error, e:
-        print e
+        print(e)
+
 
 if __name__ == '__main__':
     main()
