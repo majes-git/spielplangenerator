@@ -43,25 +43,40 @@ class schema:
         self.rounds = 2 * len(self.schema) / self.teams / (self.teams - 1)
 
 
+def print_summary(s, all_team_days):
+    print('* Anzahl der Mannschaften: %d' % s.teams)
+    print('* Anzahl der Heim-/Gastspiele:')
+    max_space = max([len('%s' % d) for d in all_team_days])
+    for m in range(s.teams):
+        team_days = all_team_days[m+1]
+        max_difference = max(
+            team_days[i+1]-team_days[i] for i in range(len(team_days) - 1))
+        output = '  - Mannschaft {:>2}: Heim {:>2} | Gast {:>2} | Gesamt {:>2}'
+        output = output.format(m + 1, s.home[m], s.guest[m],
+                               s.home[m] + s.guest[m])
+        output += ' => Spieltage: {:{width}} (max: {})'.format(
+            team_days, max_difference, width=max_space)
+        print(output)
+    print('* Anzahl der Runden: %d' % s.rounds)
+    if set(chain.from_iterable(s.pairs)) != set([s.rounds]):
+        raise Error('Anzahl der Paarungen (%d mal jeder gegen jeden) nicht korrekt: %s' % (s.rounds, s.pairs))
+    print('* Anzahl der Paarungen (%d mal jeder gegen jeden) korrekt' %
+          s.rounds)
+
+
 def main():
     try:
         if len(sys.argv) != 2:
             print("Syntax: %s <schemaXX.json>" % sys.argv[0])
             return
         s = schema(json.load(open(sys.argv[1])))
-        print('* Anzahl der Mannschaften: %d' % s.teams)
-        print('* Anzahl der Heim-/Gastspiele:')
-        for m in range(s.teams):
-            print('  - Mannschaft %2d: Heim %2d | Gast %2d | Gesamt %2d' %
-                  (m + 1, s.home[m], s.guest[m], s.home[m] + s.guest[m]))
-        print('* Anzahl der Runden: %d' % s.rounds)
-        if set(chain.from_iterable(s.pairs)) != set([s.rounds]):
-            raise Error('Anzahl der Paarungen (%d mal jeder gegen jeden) nicht korrekt: %s' % (s.rounds, s.pairs))
-        print('* Anzahl der Paarungen (%d mal jeder gegen jeden) korrekt' %
-              s.rounds)
         try:
             day = 0
             team_matches = [0] * s.teams
+            # record the match days for every team
+            team_days = [[]]
+            for t in range(s.teams):
+                team_days.append([])
             for m in s.schema:
                 if day != m[2]:
                     if day > m[2]:
@@ -76,6 +91,11 @@ def main():
                 # increase match count per team per match
                 team_matches[m[0] - 1] += 1
                 team_matches[m[1] - 1] += 1
+                if day not in team_days[m[0]]:
+                    team_days[m[0]].append(day)
+                if day not in team_days[m[1]]:
+                    team_days[m[1]].append(day)
+            print_summary(s, team_days)
         except:
             raise
 
