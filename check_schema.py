@@ -54,8 +54,10 @@ def print_summary(s, all_team_days):
         output = '  - Mannschaft {:>2}: Heim {:>2} | Gast {:>2} | Gesamt {:>2}'
         output = output.format(m + 1, s.home[m], s.guest[m],
                                s.home[m] + s.guest[m])
-        output += ' => Spieltage: {:{width}} (max: {})'.format(
-            team_days, max_difference, width=max_space)
+        # output += ' => Spieltage: {:{w}} (max: {})'.format(
+        #     team_days, max_difference, w=max_space)
+        output += ' => Spieltage: {} (max: {})'.format(
+            team_days, max_difference)
         print(output)
     print('* Anzahl der Runden: %d' % s.rounds)
     if set(chain.from_iterable(s.pairs)) != set([s.rounds]):
@@ -99,7 +101,7 @@ def main():
         except:
             raise
 
-    except Error, e:
+    except Error as e:
         print(e)
 
 

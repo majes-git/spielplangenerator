@@ -16,16 +16,17 @@ def main():
     spieltage = config['spieltage']
     teams = config['teams']
 
-    print("Nr.;;;;Datum;;Uhrzeit;;Heim-Mannschaft;;Gast-Mannschaft;;;;")
+    print("Nr.;;;;Datum;;Uhrzeit;;Heim-Mannschaft;;Gast-Mannschaft;;;;Halle")
     i = 0
     for spiel in schema:
-        line = u"{};;;;{};;00:00;;{};;{};;;;".format(
+        line = u"{};;;;{};;00:00;;{};;{};;;;{}".format(
             1 + i,
             spieltage[str(spiel[2])],
             teams[spiel[0] - 1][0],
-            teams[spiel[1] - 1][0]
+            teams[spiel[1] - 1][0],
+            teams[spiel[3]-1][1],
         )
-        print(line.encode('windows-1252'))
+        print(line)
         i += 1
 
 
